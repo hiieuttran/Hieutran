@@ -9,11 +9,20 @@ workflows:
     scripts:
       - name: Cai dat dependencies
         script: |
-          npm install
+          ls -la
+          cat package.json || echo "chua co package.json"
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
       - name: Them Android platform
         script: |
-          npx cap add android || echo "android da co"
-          npx cap sync android
+          ls -la
+          mkdir -p www
+          ls www || echo "www trong"
+          if [ ! -f www/index.html ]; then echo "THIEU www/index.html - can up file game len"; exit 1; fi
+          if [ ! -f capacitor.config.ts ]; then
+            printf "import type { CapacitorConfig } from '@capacitor/cli';\nconst config: CapacitorConfig = { appId: 'com.banhmi.dobanhmi', appName: 'Do Banh Mi', webDir: 'www' };\nexport default config;\n" > capacitor.config.ts
+          fi
+          ./node_modules/.bin/cap add android || echo "android da co"
+          ./node_modules/.bin/cap sync android
       - name: Build APK Debug
         script: |
           cd android
