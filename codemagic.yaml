@@ -1,0 +1,31 @@
+workflows:
+  android-banh-mi:
+    name: Build APK Do Banh Mi
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      groups:
+        - google_play
+      node: 20
+      java: 17
+      android_signing:
+        - keystore_reference
+    scripts:
+      - name: Cai dat dependencies
+        script: |
+          npm install
+      - name: Them Android platform
+        script: |
+          npx cap add android || echo "android da co"
+          npx cap sync android
+      - name: Build APK Debug
+        script: |
+          cd android
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/apk/debug/*.apk
+      - android/app/build/outputs/bundle/release/*.aab
+    publishing:
+      email:
+        recipients:
+          - hieutran@example.com
